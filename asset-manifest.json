@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/starwars-form/static/css/main.922377a1.chunk.css",
+    "main.js": "/starwars-form/static/js/main.66465d71.chunk.js",
+    "main.js.map": "/starwars-form/static/js/main.66465d71.chunk.js.map",
+    "runtime-main.js": "/starwars-form/static/js/runtime-main.61b2778b.js",
+    "runtime-main.js.map": "/starwars-form/static/js/runtime-main.61b2778b.js.map",
+    "static/js/2.6577ea5d.chunk.js": "/starwars-form/static/js/2.6577ea5d.chunk.js",
+    "static/js/2.6577ea5d.chunk.js.map": "/starwars-form/static/js/2.6577ea5d.chunk.js.map",
+    "index.html": "/starwars-form/index.html",
+    "precache-manifest.f54c7d856660d6f07fe988ebc85b2a9e.js": "/starwars-form/precache-manifest.f54c7d856660d6f07fe988ebc85b2a9e.js",
+    "service-worker.js": "/starwars-form/service-worker.js",
+    "static/css/main.922377a1.chunk.css.map": "/starwars-form/static/css/main.922377a1.chunk.css.map",
+    "static/js/2.6577ea5d.chunk.js.LICENSE.txt": "/starwars-form/static/js/2.6577ea5d.chunk.js.LICENSE.txt",
+    "static/media/empire.svg": "/starwars-form/static/media/empire.9fbe3215.svg",
+    "static/media/kenobi.svg": "/starwars-form/static/media/kenobi.974cc90a.svg",
+    "static/media/maul.svg": "/starwars-form/static/media/maul.0bd04385.svg",
+    "static/media/skywalker.svg": "/starwars-form/static/media/skywalker.7b435b3c.svg",
+    "static/media/starwars-logo.svg": "/starwars-form/static/media/starwars-logo.be343f8e.svg",
+    "static/media/vader.svg": "/starwars-form/static/media/vader.dbc8903d.svg",
+    "static/media/yoda.svg": "/starwars-form/static/media/yoda.0b67eecc.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.61b2778b.js",
+    "static/js/2.6577ea5d.chunk.js",
+    "static/css/main.922377a1.chunk.css",
+    "static/js/main.66465d71.chunk.js"
+  ]
+}
