@@ -5,16 +5,15 @@ import { setUserInfo, getUserInfo } from './../../models/UserModel'
 import { getCharacters } from './../../models/CharactersModel'
 
 export function Main() {
-  const [step, setStep] = useState(0); 
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState("");
-  const [sideForce, setSideForce] = useState("");
-  const [character, setCharacter] = useState('');
+  const [step, setStep] = useState(0);
   const [allCharacters, setAllCharacters] = useState([]);
-  const [user, setUser] = useState({});
-  // const user = useState({
-  //   'name'
-  // })
+  const [userForm, setUserForm] = useState({
+    "name": "",
+    "gender": "",
+    "sideForce": "",
+    "character": "",
+  });
+  const [registeredUser, setRegisteredUser] = useState({});
 
   useEffect(() => {
     const getCharactersFromApi = async () => {
@@ -25,45 +24,48 @@ export function Main() {
     getCharactersFromApi();
   }, []);
 
-  useEffect(() => {
-    if (!step) return;
-
-    const newStep = step + 1;
-    
-    setStep(newStep);
-  }, [gender, sideForce, character]);
-
-  const handleSubmit = async event => {
-    event.preventDefault();
-
-    const userId = await setUserInfo(name, gender, sideForce, character);
-    getUser(userId);
-  };
+ 
 
   const getUser = async (id) => {
     const response = await getUserInfo(id);
 
-    setUser({
+    setRegisteredUser({
       id,
       ...response
     });
   };
 
-  const handleChangeUser = (key, value) => {
+  const handleChangeUserForm = (key, value) => {
+    setUserForm(prevState => ({
+      ...prevState,
+      [key]: value
+    }));
 
-  }
+    if (key !== "name") setStep(prevState => prevState + 1);
+  };
+
+  useEffect(() => {
+    if (!userForm.character) return;
+
+    const handleSubmit = async () => {
+      const userId = await setUserInfo({ ...userForm });
+      getUser(userId);
+    };
+
+    handleSubmit();
+  }, [userForm]);
 
   return (
     <div className="global">
-      <form className="form" onSubmit={handleSubmit}>
+      <form className="form">
         {!step && (
           <>
             <label className="label">
               <span className="labelText">Qual o seu nome?</span>
-              <input className="defaultInput" type="text" placeholder="Seu nome" value={name} onChange={(event) => setName(event.target.value)} />
+              <input className="defaultInput" type="text" placeholder="Seu nome" value={userForm.name} onChange={(event) => handleChangeUserForm("name", event.target.value)} />
             </label>
 
-            <button type="button" className={`defaultButton ${name ? 'active' : ''}`} onClick={() => setStep(1)}>
+            <button type="button" className={`defaultButton ${userForm.name ? 'active' : ''}`} onClick={() => setStep(1)}>
               OK
             </button>
           </>
@@ -74,11 +76,11 @@ export function Main() {
             <span className="labelText">Qual o seu gênero?</span>
 
             <div>
-              <button type="button" className="defaultButton active" onClick={() => handleChangeUser("gender", "male")}>
+              <button type="button" className="defaultButton active" onClick={() => handleChangeUserForm("gender", "male")}>
                 HOMEM
               </button>
 
-              <button type="button" className="defaultButton active" onClick={() => handleChangeUser("gender", "female")}>
+              <button type="button" className="defaultButton active" onClick={() => handleChangeUserForm("gender", "female")}>
                 MULHER
               </button>
             </div>
@@ -90,11 +92,11 @@ export function Main() {
             <span className="labelText">Qual o seu lado da força?</span>
 
             <div>
-              <button type="button" className="defaultButton active jedi" onClick={() => setSideForce("jedi")}>
+              <button type="button" className="defaultButton active jedi" onClick={() => handleChangeUserForm("sideForce", "jedi")}>
                 JEDI
               </button>
 
-              <button type="button" className="defaultButton active sith" onClick={() => setSideForce("sith")}>
+              <button type="button" className="defaultButton active sith" onClick={() => handleChangeUserForm("sideForce", "sith")}>
                 SITH
               </button>
             </div>
@@ -105,25 +107,25 @@ export function Main() {
           <>
             <span className="labelText">Escolha o seu personagem:</span>
 
-            <div className="globalCharacters">
-              {allCharacters.filter(item => item.sideForce === sideForce).map(character => (
-                <button key={character.id} type="submit" className="characterItem" onClick={() => setCharacter(character.id)}>
+            <ul className="globalCharacters">
+              {allCharacters.filter(item => item.sideForce === userForm.sideForce).map(character => (
+                <li key={character.id} className="characterItem" onClick={() => handleChangeUserForm("character", character.id)}>
                   <div className="globalCharacterImage">
                     <img src={imgCharacters[character.slug]} alt={character.name} />
                   </div>
 
                 <span className="characterName">{character.name}</span>
-                </button>
+                </li>
               ))}
-            </div>
+            </ul>
           </>
         )}
 
-        {step === 4 && user.id && (
+        {step === 4 && registeredUser.id && (
           <>
-            <img src={imgCharacters[allCharacters[user.character].slug]} alt={allCharacters[user.character].name} />
+            <img src={imgCharacters[allCharacters[registeredUser.character].slug]} alt={allCharacters[registeredUser.character].name} />
 
-            <span className="welcome">Bem-vindo, <strong>{user.name}</strong></span>
+            <span className="welcome">Bem-vindo, <strong>{registeredUser.name}</strong></span>
           </>
         )}
       </form>
