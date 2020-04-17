@@ -1,115 +1,132 @@
-import React, { Component } from "react";
-import yoda from '../../imgs/yoda.svg';
+import React, { useState, useEffect } from "react";
+import * as imgCharacters from '../../imgs/characters';
 import "./styles.scss";
+import { setUserInfo, getUserInfo } from './../../models/UserModel'
+import { getCharacters } from './../../models/CharactersModel'
 
-export default class Main extends Component {
-  state = {
-    step: 1,
-    name: ""
-  };
+export function Main() {
+  const [step, setStep] = useState(0); 
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
+  const [sideForce, setSideForce] = useState("");
+  const [character, setCharacter] = useState('');
+  const [allCharacters, setAllCharacters] = useState([]);
+  const [user, setUser] = useState({});
+  // const user = useState({
+  //   'name'
+  // })
 
-  handleChange = (event) => {
-    this.setState({
-      name: event.target.value
-    });
-  };
+  useEffect(() => {
+    const getCharactersFromApi = async () => {
+      const characters = await getCharacters();
+      setAllCharacters(characters);
+    }
 
-  handleSubmit = async event => {
+    getCharactersFromApi();
+  }, []);
+
+  useEffect(() => {
+    if (!step) return;
+
+    const newStep = step + 1;
+    
+    setStep(newStep);
+  }, [gender, sideForce, character]);
+
+  const handleSubmit = async event => {
     event.preventDefault();
 
-    console.log('handleSubmit!!!');
+    const userId = await setUserInfo(name, gender, sideForce, character);
+    getUser(userId);
   };
 
-  changeStep = (step) => {
-    this.setState({
-      step: step
+  const getUser = async (id) => {
+    const response = await getUserInfo(id);
+
+    setUser({
+      id,
+      ...response
     });
   };
 
-  render() {
-    return (
-      <div className="global">
-        <form className="form" onSubmit={this.handleSubmit}>
-          {this.state.step === 1 && (
-            <>
-              <label className="label">
-                <span className="labelText">Qual o seu nome?</span>
-                <input className="defaultInput" type="text" placeholder="Seu nome" value={this.state.name} onChange={this.handleChange} />
-              </label>
+  const handleChangeUser = (key, value) => {
 
-              <button className={`defaultButton ${this.state.name ? 'active' : ''}`} onClick={() => this.changeStep(2)}>
-                OK
-              </button>
-            </>
-          )}
-
-          {this.state.step === 2 && (
-            <>
-              <span className="labelText">Qual o seu gênero?</span>
-
-              <div>
-                <button className="defaultButton active" onClick={() => this.changeStep(3)}>
-                  HOMEM
-                </button>
-
-                <button className="defaultButton active" onClick={() => this.changeStep(3)}>
-                  MULHER
-                </button>
-              </div>
-            </>
-          )}
-
-          {this.state.step === 3 && (
-            <>
-              <span className="labelText">Qual o seu lado da força?</span>
-
-              <div>
-                <button className="defaultButton active jedi" onClick={() => this.changeStep(4)}>
-                  JEDI
-                </button>
-
-                <button className="defaultButton active sith" onClick={() => this.changeStep(4)}>
-                  SITH
-                </button>
-              </div>
-            </>
-          )}
-
-          {this.state.step === 4 && (
-            <>
-              <span className="labelText">Escolha o seu personagem:</span>
-
-              <ul className="globalCharacters">
-                <li className="characterItem" onClick={() => this.changeStep(5)}>
-                  <img src={yoda} alt="Yoda" />
-
-                  <span className="characterName">Mestre Yoda</span>
-                </li>
-
-                <li className="characterItem" onClick={() => this.changeStep(5)}>
-                  <img src={yoda} alt="Yoda" />
-
-                  <span className="characterName">Mestre Yoda</span>
-                </li>
-
-                <li className="characterItem" onClick={() => this.changeStep(5)}>
-                  <img src={yoda} alt="Yoda" />
-
-                  <span className="characterName">Mestre Yoda</span>
-                </li>
-              </ul>
-            </>
-          )}
-
-          {this.state.step === 5 && (
-            <>
-              <img src={yoda} alt="Yoda" width="300" />
-
-              <span class="welcome">Bem-vindo, <strong>{this.state.name}</strong></span>
-            </>
-          )}
-        </form>
-      </div>
-    );
   }
+
+  return (
+    <div className="global">
+      <form className="form" onSubmit={handleSubmit}>
+        {!step && (
+          <>
+            <label className="label">
+              <span className="labelText">Qual o seu nome?</span>
+              <input className="defaultInput" type="text" placeholder="Seu nome" value={name} onChange={(event) => setName(event.target.value)} />
+            </label>
+
+            <button type="button" className={`defaultButton ${name ? 'active' : ''}`} onClick={() => setStep(1)}>
+              OK
+            </button>
+          </>
+        )}
+
+        {step === 1 && (
+          <>
+            <span className="labelText">Qual o seu gênero?</span>
+
+            <div>
+              <button type="button" className="defaultButton active" onClick={() => handleChangeUser("gender", "male")}>
+                HOMEM
+              </button>
+
+              <button type="button" className="defaultButton active" onClick={() => handleChangeUser("gender", "female")}>
+                MULHER
+              </button>
+            </div>
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <span className="labelText">Qual o seu lado da força?</span>
+
+            <div>
+              <button type="button" className="defaultButton active jedi" onClick={() => setSideForce("jedi")}>
+                JEDI
+              </button>
+
+              <button type="button" className="defaultButton active sith" onClick={() => setSideForce("sith")}>
+                SITH
+              </button>
+            </div>
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            <span className="labelText">Escolha o seu personagem:</span>
+
+            <div className="globalCharacters">
+              {allCharacters.filter(item => item.sideForce === sideForce).map(character => (
+                <button key={character.id} type="submit" className="characterItem" onClick={() => setCharacter(character.id)}>
+                  <div className="globalCharacterImage">
+                    <img src={imgCharacters[character.slug]} alt={character.name} />
+                  </div>
+
+                <span className="characterName">{character.name}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {step === 4 && user.id && (
+          <>
+            <img src={imgCharacters[allCharacters[user.character].slug]} alt={allCharacters[user.character].name} />
+
+            <span className="welcome">Bem-vindo, <strong>{user.name}</strong></span>
+          </>
+        )}
+      </form>
+    </div>
+  );
 }

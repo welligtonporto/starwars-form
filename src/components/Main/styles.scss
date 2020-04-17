@@ -1,8 +1,8 @@
 .global {
   display: flex;
-  align-items: center;
   height: 100%;
   padding-top: 40px;
+  overflow-y: auto;
 }
 
 .form {
@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .label {
@@ -69,6 +70,10 @@
     }
   }
 
+  &:hover {
+    background-color: #999;
+  }
+
   &:active {
     transform: scale(0.9);
   }
@@ -80,6 +85,11 @@
   margin-top: 5px;
 }
 
+.globalCharacterImage {
+  height: 200px;
+  display: flex;
+}
+
 .characterItem {
   display: flex;
   flex-direction: column;
@@ -87,6 +97,8 @@
   list-style: none;
   cursor: pointer;
   margin-bottom: 40px;
+  background-color: transparent;
+  border: 0;
   
   @media (min-width: 1024px) {
     margin: 0 20px;
@@ -98,6 +110,7 @@
 
   img {
     transition: transform 200ms;
+    max-height: 180px;
   }
 
   &:hover img {
