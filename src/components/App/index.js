@@ -7,6 +7,7 @@ export function App() {
   return (
     <>
       <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet" />
+      
       <h1>
         <img className="logo" src={starwarsLogo} alt="Star Wars" />
       </h1>

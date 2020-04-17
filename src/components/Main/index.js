@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import * as imgCharacters from '../../imgs/characters';
 import "./styles.scss";
-import { setUserInfo, getUserInfo } from './../../models/UserModel'
-import { getCharacters } from './../../models/CharactersModel'
+import { setUserInfo, getUserInfo } from './../../models/UserModel';
+import { getCharacters } from './../../models/CharactersModel';
 
 export function Main() {
-  const [step, setStep] = useState(0);
-  const [allCharacters, setAllCharacters] = useState([]);
   const [userForm, setUserForm] = useState({
     "name": "",
     "gender": "",
@@ -14,18 +12,29 @@ export function Main() {
     "character": "",
   });
   const [registeredUser, setRegisteredUser] = useState({});
+  const [allCharacters, setAllCharacters] = useState([]);
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
     const getCharactersFromApi = async () => {
       const characters = await getCharacters();
       setAllCharacters(characters);
-    }
+    };
 
     getCharactersFromApi();
   }, []);
 
- 
+  useEffect(() => {
+    if (!userForm.character) return;
 
+    const handleSubmit = async () => {
+      const userId = await setUserInfo({ ...userForm });
+      getUser(userId);
+    };
+
+    handleSubmit();
+  }, [userForm]);
+ 
   const getUser = async (id) => {
     const response = await getUserInfo(id);
 
@@ -43,17 +52,6 @@ export function Main() {
 
     if (key !== "name") setStep(prevState => prevState + 1);
   };
-
-  useEffect(() => {
-    if (!userForm.character) return;
-
-    const handleSubmit = async () => {
-      const userId = await setUserInfo({ ...userForm });
-      getUser(userId);
-    };
-
-    handleSubmit();
-  }, [userForm]);
 
   return (
     <div className="global">
@@ -89,7 +87,7 @@ export function Main() {
 
         {step === 2 && (
           <>
-            <span className="labelText">Qual o seu lado da força?</span>
+            <span className="labelText">Qual o lado da força você escolhe?</span>
 
             <div>
               <button type="button" className="defaultButton active jedi" onClick={() => handleChangeUserForm("sideForce", "jedi")}>
@@ -114,7 +112,7 @@ export function Main() {
                     <img src={imgCharacters[character.slug]} alt={character.name} />
                   </div>
 
-                <span className="characterName">{character.name}</span>
+                  <span className="characterName">{character.name}</span>
                 </li>
               ))}
             </ul>
@@ -131,4 +129,4 @@ export function Main() {
       </form>
     </div>
   );
-}
+};
