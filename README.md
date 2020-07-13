@@ -6,6 +6,6 @@ A Starwars App using Firebase.
 - Run `npm install`
 - Run `npm start`
 
-URLS:
+### URLS:
 - Fallen profile `http://localhost:3000/player/94`
 - Muleklizzo profile `http://localhost:3000/player/737335`
